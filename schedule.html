@@ -1,0 +1,26 @@
+<html>
+  <title>Test Schedule</title>
+  <header></header>
+  <body>
+    <h1>Schedule</h1>
+    <h2>Number of matches {{ . | len -}}</h2>
+    <table>
+      <thead>
+        <th>
+          <td>Home</td>
+          <td>Time</td>
+          <td>Away</td>
+        </th>
+      </thead>
+      <tbody>
+        {{ range . }}
+          <tr>
+            <td>{{ .Home }}</td>
+            <td> {{ .EventDateTime | timeConverter }}</td>
+            <td>{{ .Away }}</td>
+          </tr>
+        {{ end -}}
+      </tbody>
+    </table>
+  </body>
+</html>
