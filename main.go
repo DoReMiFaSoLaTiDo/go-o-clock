@@ -12,6 +12,49 @@ type Match struct {
 	EventDateTime time.Time
 }
 
+type Webpage struct {
+	Title string
+	Body  []byte
+}
+
+func cacheFile(title string) (*Webpage, error) {
+	filename := title + ".txt"
+	_, err := os.Open(filename)
+	if err != nil {
+		theFileName := title + "_raw.txt"
+		theFile, err := os.Open(theFileName)
+		if err != nil {
+			panic(err)
+		}
+		data := make([]byte, 500)
+		count, err := theFile.Read(data)
+		theFile.Close()
+		if err != nil {
+			panic(err)
+		}
+		if count > 0 {
+			filename := title + ".txt"
+			err := os.WriteFile(filename, data, 0600)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+	newData, err := os.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
+	return &Webpage{Title: title, Body: newData}, nil
+}
+
+func loadPage(breadcrumb string) (*Webpage, error) {
+	page, err := cacheFile(breadcrumb)
+	if err != nil { // file may not exist
+		panic(err)
+	}
+	return page, nil
+}
+
 func main() {
 	loc, _ := time.LoadLocation("Europe/London")
 
